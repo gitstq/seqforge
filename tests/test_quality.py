@@ -63,7 +63,9 @@ class TrimTests(unittest.TestCase):
         # window means: 21, 21, 21, 30.5, 40 -> good windows start at index 3
         # and 4, so the kept span is [3, 8)
         self.assertEqual(record.seq, "TACGT")
-        self.assertEqual(record.qual, "IIII")
+        # qual[3:8] keeps the '#' at index 3, so seq and qual stay aligned
+        self.assertEqual(record.qual, "#IIII")
+        self.assertEqual(len(record.seq), len(record.qual))
 
 
 class FilterTests(unittest.TestCase):
