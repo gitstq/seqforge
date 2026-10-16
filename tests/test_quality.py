@@ -60,8 +60,9 @@ class TrimTests(unittest.TestCase):
     def test_trim_record(self):
         record = make_record(seq="ACGTACGT", qual="II##IIII")
         trim_record(record, threshold=25, window=4)
-        # windows: II##=21 F, I##I=21 F, ##II=21 F, #III=30.5 T
-        self.assertEqual(record.seq, "TACG")
+        # window means: 21, 21, 21, 30.5, 40 -> good windows start at index 3
+        # and 4, so the kept span is [3, 8)
+        self.assertEqual(record.seq, "TACGT")
         self.assertEqual(record.qual, "IIII")
 
 
