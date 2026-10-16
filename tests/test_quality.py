@@ -77,7 +77,13 @@ class FilterTests(unittest.TestCase):
         self.assertFalse(passes_filters(record, min_len=5))
         self.assertFalse(passes_filters(record, max_len=3))
         self.assertFalse(passes_filters(record, min_mean_q=41))
-        self.assertFalse(passes_filters(record, max_n_frac=0.5))
+        # ACGT has no N at all, so any N fraction limit is satisfied
+        self.assertTrue(passes_filters(record, max_n_frac=0.5))
+
+    def test_passes_filters_rejects_ambiguous_reads(self):
+        record = make_record(seq="ACGN", qual="IIII", id="r2")
+        self.assertFalse(passes_filters(record, max_n_frac=0.1))
+        self.assertTrue(passes_filters(record, max_n_frac=0.5))
 
     def test_filter_fastq(self):
         records = [

@@ -78,7 +78,8 @@ def trim_sliding(scores, threshold, window):
         window_means.append(sum(chunk) / float(window))
     best_start, best_end = 0, 0
     run_start = None
-    for index, ok in enumerate(window_means):
+    for index, mean in enumerate(window_means):
+        ok = mean >= threshold
         if ok and run_start is None:
             run_start = index
         elif not ok and run_start is not None:

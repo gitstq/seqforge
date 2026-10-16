@@ -21,7 +21,9 @@ class ReverseComplementTests(unittest.TestCase):
         self.assertEqual(reverse_complement("AUGC", rna=True), "GCAU")
 
     def test_iupac_ambiguity(self):
-        self.assertEqual(reverse_complement("RYKM"), "KMYR")
+        # complement-then-reverse: RYKM -> YRMK -> KMRY
+        self.assertEqual(reverse_complement("RYKM"), "KMRY")
+        # BDHVN -> VHDBN -> NBDHV
         self.assertEqual(reverse_complement("BDHVN"), "NBDHV")
 
     def test_gaps_preserved(self):

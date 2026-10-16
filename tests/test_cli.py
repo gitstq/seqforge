@@ -118,7 +118,8 @@ class CliTestCase(unittest.TestCase):
     # -- orf -----------------------------------------------------------------
 
     def test_orf(self):
-        code, out, _ = self._run(["orf", self.fasta_path, "--min-len", "30"])
+        # the demo sequence carries a 24 bp ORF, so the threshold must allow it
+        code, out, _ = self._run(["orf", self.fasta_path, "--min-len", "20"])
         self.assertEqual(code, 0)
         self.assertIn("strand", out)
 

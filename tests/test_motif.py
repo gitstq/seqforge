@@ -25,8 +25,9 @@ class MotifTests(unittest.TestCase):
                                    (4, 7, "+"), (5, 8, "-")])
 
     def test_iupac_motif(self):
-        self.assertEqual(find_motif("ATGCGAT", "CGW"), [(2, 5, "+")])
-        self.assertEqual(find_motif("ATGCGAT", "CGN"), [(2, 5, "+")])
+        # "ATGCGAT": positions 3-5 spell "CGA", which matches CGW and CGN
+        self.assertEqual(find_motif("ATGCGAT", "CGW"), [(3, 6, "+")])
+        self.assertEqual(find_motif("ATGCGAT", "CGN"), [(3, 6, "+")])
 
     def test_case_insensitive(self):
         self.assertEqual(find_motif("acgtacgt", "ACG"),

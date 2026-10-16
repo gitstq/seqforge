@@ -52,7 +52,8 @@ class GCTests(unittest.TestCase):
         self.assertEqual(gc_content("GCNAN"), 66.67)
 
     def test_gc_fraction(self):
-        self.assertEqual(gc_fraction("GCNAT"), (2, 1, 3))
+        # "GCNAT": 2 G/C, 2 A/T, N excluded from the called count
+        self.assertEqual(gc_fraction("GCNAT"), (2, 2, 4))
 
     def test_gc_skew(self):
         self.assertEqual(gc_skew("GGCC"), 0.0)

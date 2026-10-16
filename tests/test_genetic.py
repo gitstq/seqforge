@@ -32,7 +32,8 @@ class TranslateTests(unittest.TestCase):
         self.assertEqual(translate("atggcc"), "MA")
 
     def test_ambiguous_codon_is_x(self):
-        self.assertEqual(translate("ATNGGN"), "MX")
+        # ATN carries an ambiguous first base, so the residue is unknown
+        self.assertEqual(translate("ATNGGN"), "XX")
 
     def test_partial_codon_ignored(self):
         self.assertEqual(translate("ATGGC"), "M")

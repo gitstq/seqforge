@@ -8,7 +8,8 @@ class RenderTableTests(unittest.TestCase):
     def test_basic_structure(self):
         table = render_table(["name", "value"], [["a", "1"]])
         lines = table.splitlines()
-        self.assertEqual(lines[0], "+-------+-------+")
+        # column widths are 4 ("name") and 5 ("value"), plus 2 padding spaces
+        self.assertEqual(lines[0], "+------+-------+")
         self.assertIn("| name | value |", lines[1])
         self.assertIn("| a    | 1     |", lines[3])
         self.assertEqual(lines[2], lines[4])
