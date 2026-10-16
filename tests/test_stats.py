@@ -3,6 +3,7 @@ import unittest
 from seqforge.seqio import FastaRecord
 from seqforge.stats import (
     gc_content,
+    gc_fraction,
     gc_skew,
     length_stats,
     sequence_summary,
@@ -45,6 +46,13 @@ class GCTests(unittest.TestCase):
     def test_gc_content_empty(self):
         self.assertEqual(gc_content(""), 0.0)
         self.assertEqual(gc_content("NNNN"), 0.0)
+
+    def test_gc_content_ignores_ambiguous_bases(self):
+        # N is excluded from the denominator: 2 GC of 3 called bases
+        self.assertEqual(gc_content("GCNAN"), 66.67)
+
+    def test_gc_fraction(self):
+        self.assertEqual(gc_fraction("GCNAT"), (2, 1, 3))
 
     def test_gc_skew(self):
         self.assertEqual(gc_skew("GGCC"), 0.0)

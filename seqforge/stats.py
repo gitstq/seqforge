@@ -47,18 +47,30 @@ def _counts(seq):
     }
 
 
+def gc_fraction(seq):
+    """Return ``(gc_count, at_count, called_count)`` for a sequence.
+
+    ``called_count`` counts only unambiguous A/C/G/T/U bases, so callers can
+    weight correctly even when the input contains ``N`` or other ambiguity
+    codes.
+    """
+    upper = seq.upper()
+    gc = upper.count("G") + upper.count("C")
+    at = upper.count("A") + upper.count("T") + upper.count("U")
+    return gc, at, gc + at
+
+
 def gc_content(seq):
     """GC percentage over unambiguous bases.
 
-    RNA input is handled: ``U`` counts as the A/T-family base.
+    RNA input is handled: ``U`` counts as the A/T-family base. Ambiguity
+    codes such as ``N`` are excluded from the denominator; a sequence with
+    no called bases yields ``0.0``.
     """
-    counts = _counts(seq)
-    gc = counts["G"] + counts["C"]
-    at = counts["A"] + counts["T"] + counts["U"]
-    denom = at + gc
-    if denom == 0:
+    gc, at, called = gc_fraction(seq)
+    if called == 0:
         return 0.0
-    return round(100.0 * gc / denom, 2)
+    return round(100.0 * gc / called, 2)
 
 
 def gc_skew(seq):
@@ -94,19 +106,21 @@ def sequence_summary(records):
     """
     per_sequence = []
     lengths = []
-    gc_weighted = 0.0
-    bases_total = 0
+    gc_bases = 0
+    called_bases = 0
     for record in records:
         length = len(record.seq)
         lengths.append(length)
-        gc = gc_content(record.seq)
-        gc_weighted += gc * length
-        bases_total += length
+        gc, at, called = gc_fraction(record.seq)
+        gc_bases += gc
+        called_bases += called
         per_sequence.append({
             "id": record.id,
             "length": length,
-            "gc": gc,
+            "gc": round(100.0 * gc / called, 2) if called else 0.0,
         })
     summary = length_stats(lengths)
-    summary["gc"] = round(gc_weighted / bases_total, 2) if bases_total else 0.0
+    summary["gc"] = (
+        round(100.0 * gc_bases / called_bases, 2) if called_bases else 0.0
+    )
     return summary, per_sequence

@@ -46,7 +46,9 @@ class CliTestCase(unittest.TestCase):
         code, out, _ = self._run(["stats", self.fasta_path, "--json"])
         self.assertEqual(code, 0)
         data = json.loads(out)
-        self.assertEqual(data["summary"]["records"], 2)
+        # summary mirrors length_stats(): the record count key is "count"
+        self.assertEqual(data["summary"]["count"], 2)
+        self.assertEqual(data["summary"]["total"], 45)
         self.assertEqual(data["format"], "fasta")
 
     def test_stats_per_seq(self):
